@@ -23,7 +23,7 @@ module top_level(
   
   // input wire [15:0] answer, 
   output wire lcd_e, lcd_rs, lcd_rw,
-  output wire [7:0] lcd_data,
+  output wire [7:0] lcd_data
 //   output wire	[3:0] Output1,
 // output wire	[3:0] Output2
 );
