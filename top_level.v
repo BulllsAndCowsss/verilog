@@ -111,7 +111,7 @@ FourInputConv u2 (
   BullsAndCows game_logic(
     .guess(out),   
     .answer(answer),
-    .IsFourStrike(isFourStrike),
+    .isFourStrike(isFourStrike),
     .checkEnable(checkEnable),
     .strike(strike), 
     .ball(ball),      
