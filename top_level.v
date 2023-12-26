@@ -20,7 +20,7 @@ module top_level(
   output wire Red2,
   output wire Red3,
   output wire Red4,
-
+  
   // input wire [15:0] answer, 
   output wire lcd_e, lcd_rs, lcd_rw,
   output wire [7:0] lcd_data
@@ -32,74 +32,72 @@ module top_level(
   wire [3:0] strike;  // strike
   wire [3:0] ball;    // ball
 
-wire zero_to_nine;
+  reg [15:0] out; // Change to 16-bit output
+  reg checkEnable;
 
-assign zero_to_nine = zero | one | two | three | four | five | six | seven | eight | nine;
+wire button_pressed;
 
-wire	[3:0] reg1;
-wire	[3:0] reg2;
-wire	[3:0] reg3;
-wire	[3:0] reg4;
+assign button_pressed = zero | one | two | three | four | five | six | seven | eight | nine;
 
-wire	[3:0] Din;
-d2b	b2v_inst6(
-	.d0(zero),
-	.d1(one),
-	.d2(two),
-	.d3(three),
-	.d4(four),
-	.d5(five),
-	.d6(six),
-	.d7(seven),
-	.d8(eight),
-	.d9(nine),
-	.b0(Din[0]),
-	.b1(Din[1]),
-	.b2(Din[2]),
-	.b3(Din[3]));
+wire [3:0] out_wire1, out_wire2, out_wire3, out_wire4;
+
+wire [3:0] bin_out;
+decimal_to_binary u1 (
+        .CLK(clk), 
+        .rst_n(rst), 
+        .zero(zero), 
+        .one(one), 
+        .two(two), 
+        .three(three), 
+        .four(four), 
+        .five(five), 
+        .six(six), 
+        .seven(seven), 
+        .eight(eight), 
+        .nine(nine), 
+        .binary(bin_out)
+    );
 
 // trigger
-wire trigger_signal;
-trigger	b2v_inst2(
-	.Din(zero_to_nine),
-	.CLK(clk),
-	.rst_n(~rst),
-	.Dout(trigger_signal));
+wire trigger_out;
+trigger T1 (
+        .CLK(clk),
+        .Din(button_pressed),
+        .rst_n(rst),
+        .Dout(trigger_out)
+    );
 
-four_bit_register	b2v_inst(
-	.Ce(trigger_signal),
-	.CLK(clk),
-	.RST_N(~rst),
-	.Din(Din),
-	.Dout(reg1));
+FourInputConv u2 (
+        .in(bin_out), 
+        .clk(clk), 
+        .rst_n(rst), 
+        .ce(trigger_out), // Connect trigger_out signal
+        .out1(out_wire1), 
+        .out2(out_wire2), 
+        .out3(out_wire3), 
+        .out4(out_wire4)
+    ); 
 
-four_bit_register	b2v_inst4123(
-	.Ce(trigger_signal),
-	.CLK(clk),
-	.RST_N(~rst),
-	.Din(reg1),
-	.Dout(reg2));
+    always @(posedge clk or negedge rst) begin
+        checkEnable <= 1'b0;
+        if (~rst) begin
+            out <= 16'd0;
+            checkEnable <= 1'b0;
+        end else begin
+            out <= {out_wire1, out_wire2, out_wire3, out_wire4};
+            // If any of the out_wire[i] signals is 1111, set checkEnable to 1.
+            if (out_wire1 != 4'b1111 && out_wire2 != 4'b1111 && out_wire3 != 4'b1111 && out_wire4 != 4'b1111)
+                checkEnable <= 1'b1;
+            else
+                checkEnable <= 1'b0;
+        end
+    end
 
-four_bit_register	b2v_inst424(
-	.Ce(trigger_signal),
-	.CLK(clk),
-	.RST_N(~rst),
-	.Din(reg2),
-	.Dout(reg3));
-
-four_bit_register	b2v_inst554(
-	.Ce(trigger_signal),
-	.CLK(clk),
-	.RST_N(~rst),
-	.Din(reg3),
-	.Dout(reg4));
-
-  wire [15:0] guess = {reg4, reg3, reg2, reg1};
   
   wire [7:0] lcd_data_internal;
 
   textlcd_submodule lcd_inst (
-  .rst(rst),
+  .rst(~rst),
   .clk(clk),
   .strike(strike),
   .ball(ball),
@@ -110,8 +108,9 @@ four_bit_register	b2v_inst554(
 );
 
   BullsAndCows game_logic(
-    .guess(guess),   
-    .answer(answer), 
+    .guess(out),   
+    .answer(answer),
+    .checkEnable(checkEnable),
     .strike(strike), 
     .ball(ball),      
     .lcd_data_external(lcd_data_internal)

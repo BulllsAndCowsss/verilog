@@ -1,13 +1,14 @@
 module BullsAndCows(
     input wire [15:0] guess,
     input wire [15:0] answer,
+    input wire checkEnable,
     input wire [7:0] lcd_data_external,
     output wire [3:0] strike,
     output wire [3:0] ball
 );
 
-    assign strike = count_strike(guess, answer);
-    assign ball = count_ball(guess, answer);
+    assign strike = checkEnable ? count_strike(guess, answer) : 4'd0;
+    assign ball = checkEnable ? count_ball(guess, answer) : 4'd0;
 
     function [3:0] count_strike;
         input [15:0] guess; 
