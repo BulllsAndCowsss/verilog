@@ -42,4 +42,3 @@ module PNU_CLK_DIV(clk,rst_n,en,div_clk);
     assign div_clk = buff;
 
 endmodule
-

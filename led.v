@@ -33,5 +33,4 @@ assign	Red4 = SYNTHESIZED_WIRE_3;
 
 assign	SYNTHESIZED_WIRE_3 =  ~(Strike == 4);
 
-
 endmodule

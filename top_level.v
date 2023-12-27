@@ -11,7 +11,7 @@ module top_level(
   input wire seven,
   input wire eight,
   input wire nine,
-  // input wire [15:0] answer, 
+   input wire [15:0] answer, 
   
   output wire Green1,
   output wire Green2,
@@ -32,10 +32,12 @@ module top_level(
   output wire stepMoterA,
   output wire stepMoterB,
   output wire stepMoterAAA,
-  output wire stepMoterBBB
+  output wire stepMoterBBB,
+  
+  output reg triggerState
 );
 
-parameter  [15:0] answer = 16'h1234;
+//parameter  [15:0] answer = 16'h1234;
 wire [3:0] strike;  // strike
 wire [3:0] ball;    // ball
 wire isFourStrike;
@@ -49,7 +51,7 @@ assign button_pressed = zero | one | two | three | four | five | six | seven | e
 wire [3:0] out_wire1, out_wire2, out_wire3, out_wire4;
 
 wire [3:0] bin_out;
-decimal_to_binary u1 (
+decimal_to_binary u11 (
         .CLK(clk), 
         .rst_n(rst), 
         .zero(zero), 
@@ -67,14 +69,14 @@ decimal_to_binary u1 (
 
 // trigger
 wire trigger_out;
-trigger T1 (
+trigger T11 (
         .CLK(clk),
         .Din(button_pressed),
         .rst_n(rst),
         .Dout(trigger_out)
     );
 
-FourInputConv u2 (
+FourInputConv u21 (
         .in(bin_out), 
         .clk(clk), 
         .rst_n(rst), 
@@ -98,7 +100,8 @@ FourInputConv u2 (
             else
                 checkEnable <= 1'b0;
         end
-        checkEn <= trigger_out;
+        checkEn <= checkEnable  ;
+        triggerState <= trigger_out ;
     end
 
   
