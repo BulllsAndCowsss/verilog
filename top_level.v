@@ -98,7 +98,7 @@ FourInputConv u2 (
             else
                 checkEnable <= 1'b0;
         end
-        checkEn <= checkEnable ;
+        checkEn <= trigger_out;
     end
 
   
