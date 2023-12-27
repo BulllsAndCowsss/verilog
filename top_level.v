@@ -27,7 +27,12 @@ module top_level(
 
   output reg checkEn,
   output wire piezo,
-  output reg correct
+  output reg correct,
+
+  output wire stepMoterA,
+  output wire stepMoterB,
+  output wire stepMoterAAA,
+  output wire stepMoterBBB
 );
 
 parameter  [15:0] answer = 16'h1234;
@@ -135,6 +140,7 @@ LED led_instance (
     .Red4(Red4)
   );
 
+// piezo
 wire zero_div_clk, one_div_clk, two_div_clk, three_div_clk, four_div_clk, five_div_clk, six_div_clk, seven_div_clk, eight_div_clk, nine_div_clk;
 assign   piezo = zero_div_clk | one_div_clk | two_div_clk | three_div_clk | four_div_clk | five_div_clk | six_div_clk | seven_div_clk | eight_div_clk | nine_div_clk;
 
@@ -207,5 +213,15 @@ PNU_CLK_DIV   b2v_inst13(
    .en(nine),
    .div_clk(nine_div_clk));
    defparam   b2v_inst13.cnt_num = 1702;
+
+// stepmotor
+step_moter	b2v_inst40(
+	.clk(clk),
+	.rst(rst),
+	.correct(correct),
+	.stepMoterA(stepMoterA),
+	.stepMoterB(stepMoterB),
+	.stepMoterAAA(stepMoterAAA),
+	.stepMoterBBB(stepMoterBBB));
 
 endmodule
