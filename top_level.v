@@ -24,21 +24,20 @@ module top_level(
   // input wire [15:0] answer, 
   output wire lcd_e, lcd_rs, lcd_rw,
   output wire [7:0] lcd_data,
-//   output wire	[3:0] Output1,
-// output wire	[3:0] Output2
 
-  output wire piezo
+  output wire piezo,
+  output reg correct
 );
 
   parameter  [15:0] answer = 16'h1234;
   wire [3:0] strike;  // strike
   wire [3:0] ball;    // ball
+  wire isFourStrike;
 
   reg [15:0] out; // Change to 16-bit output
   reg checkEnable;
 
 wire button_pressed;
-
 assign button_pressed = zero | one | two | three | four | five | six | seven | eight | nine;
 
 wire [3:0] out_wire1, out_wire2, out_wire3, out_wire4;
@@ -81,7 +80,7 @@ FourInputConv u2 (
     ); 
 
     always @(posedge clk or negedge rst) begin
-        checkEnable <= 1'b0;
+        correct <= isFourStrike;
         if (~rst) begin
             out <= 16'd0;
             checkEnable <= 1'b0;
@@ -109,7 +108,6 @@ FourInputConv u2 (
   .lcd_data_external(lcd_data_internal)
 );
 
-  wire isFourStrike;
   BullsAndCows game_logic(
     .guess(out),   
     .answer(answer),
