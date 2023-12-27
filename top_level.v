@@ -23,9 +23,11 @@ module top_level(
   
   // input wire [15:0] answer, 
   output wire lcd_e, lcd_rs, lcd_rw,
-  output wire [7:0] lcd_data
+  output wire [7:0] lcd_data,
 //   output wire	[3:0] Output1,
 // output wire	[3:0] Output2
+
+  output wire piezo
 );
 
   parameter  [15:0] answer = 16'h1234;
@@ -132,5 +134,78 @@ LED led_instance (
     .Red3(Red3),
     .Red4(Red4)
   );
+
+wire zero_div_clk, one_div_clk, two_div_clk, three_div_clk, four_div_clk, five_div_clk, six_div_clk, seven_div_clk, eight_div_clk, nine_div_clk;
+assign	piezo = zero_div_clk | one_div_clk | two_div_clk | three_div_clk | four_div_clk | five_div_clk | six_div_clk | seven_div_clk | eight_div_clk | nine_div_clk;
+
+PNU_CLK_DIV	zero_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(zero),
+	.div_clk(zero_div_clk));
+	defparam	b2v_inst4.cnt_num = 1516;
+
+  PNU_CLK_DIV	one_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(one),
+	.div_clk(one_div_clk));
+	defparam	b2v_inst5.cnt_num = 3822;
+
+  PNU_CLK_DIV	two_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(two),
+	.div_clk(two_div_clk));
+	defparam	b2v_inst6.cnt_num = 3405;
+
+PNU_CLK_DIV	three_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(three),
+	.div_clk(three_div_clk));
+	defparam	b2v_inst7.cnt_num = 3033;
+
+PNU_CLK_DIV	four_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(four),
+	.div_clk(four_div_clk));
+	defparam	b2v_inst8.cnt_num = 2863;
+
+PNU_CLK_DIV	five_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(five),
+	.div_clk(five_div_clk));
+	defparam	b2v_inst313.cnt_num = 2552;
+
+PNU_CLK_DIV	six_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(six),
+	.div_clk(six_div_clk));
+	defparam	b2v_inst10.cnt_num = 2272;
+
+PNU_CLK_DIV	seven_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(seven),
+	.div_clk(seven_div_clk));
+	defparam	b2v_inst11.cnt_num = 2024;
+
+PNU_CLK_DIV	eight_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(eight),
+	.div_clk(eight_div_clk));
+	defparam	b2v_inst12.cnt_num = 1911;
+
+PNU_CLK_DIV	nine_clk_inst(
+	.clk(clk),
+	.rst_n(rst),
+	.en(nine),
+	.div_clk(nine_div_clk));
+	defparam	b2v_inst13.cnt_num = 1702;
 
 endmodule
